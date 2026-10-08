@@ -10,12 +10,12 @@ st.title("🍽️ Planning des Repas Famille")
 SHEET_ID = "1cKJplaSqrLPk5sq8QjIOK53dAoDhSplvg0inEH7L94g"
 CSV_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
 
-# --- CHARGEMENT DES DONNÉES ---
+# --- CHARGEMENT DES DONNÉES SÉCURISÉ ---
 @st.cache_data(ttl=300)
 def load_data():
-    df = pd.read_csv(CSV_URL)
+    # Timeout de 5s pour éviter que l'app ne tourne en boucle indéfiniment
+    df = pd.read_csv(CSV_URL, timeout=5)
     df.columns = df.columns.str.strip()
-    # Nettoyage et conversion de la colonne Temps de préparation
     df["Temps_num"] = pd.to_numeric(df["Temps de préparation (min)"], errors='coerce').fillna(60)
     return df
 
